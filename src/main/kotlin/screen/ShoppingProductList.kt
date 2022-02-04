@@ -1,5 +1,6 @@
 package screen
 
+import data.CartItems
 import data.Product
 
 
@@ -39,16 +40,50 @@ class ShoppingProductList {
                 선택하신 [$selectedCategory] 카테고리 상품 입니다. 
             """.trimIndent()
             )
-
+            /*
             val productSize = categoryProducts.size
 
             for (index in 0 until productSize) {
                 println("${index}.${categoryProducts[index].name}")
             }
+            */
+
+            categoryProducts.forEachIndexed{
+                index, product ->  println("${index}.${product.name}")
+            }
+
+            //장바구니에 담을 상품 선택
+            showCartOption(categoryProducts, selectedCategory)
         } else {
             showEmptyProductMessage(selectedCategory)
 
         }
+    }
+
+    private fun showCartOption(categoryProducts: List<Product>, selectedCategory: String) {
+        println(""" 
+            ***=================================***
+                장바구니에 담을 상품 번호를 선택해 주세요
+                
+        """.trimIndent())
+
+        //상품 번호 입력 수행
+        val selectedIndex = readLine()?.toIntOrNull()!! //!!이건 뭐여
+        categoryProducts.getOrNull(selectedIndex)?.let{
+            product -> CartItems.addProduct(product)
+            println("=> 장바구니로 이동 하시려면 #을 , 계속 쇼핑하시려면 *를 입력해 주세요:")
+            val answer = readLine()
+            if(answer == "#"){
+                val shoppingCart = ShoppingCart()
+                shoppingCart.showCartItems()
+
+            }else if(answer == "*"){
+                showProducts(selectedCategory)
+            }else {
+                //TODO: 그외 입력 값에 대한 처리리
+            }
+       }
+
     }
 
     private fun showEmptyProductMessage(selectedCategory: String) {
